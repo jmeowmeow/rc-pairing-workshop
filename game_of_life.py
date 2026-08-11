@@ -6,12 +6,22 @@ grid_args = sys.argv[1] if len(sys.argv) > 1 else None
 
 grid = []
 
-default_grid = """00000
+blinker = """00000
 00000
 00100
 00100
 00100
 00000"""
+
+glider = """001000
+000100
+011100
+000000
+000000
+000000"""
+
+# default_grid = blinker
+default_grid =glider
 
 if grid_args:
     for x in range(int(grid_args[0])):
