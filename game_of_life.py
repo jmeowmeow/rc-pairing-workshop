@@ -1,8 +1,9 @@
 import sys
 from time import sleep
+import curses
 
 # get the filename if present
-grid_args = sys.argv[1] if len(sys.argv) > 1 else None 
+grid_arg = sys.argv[1] if len(sys.argv) > 1 else None 
 
 grid = []
 
@@ -21,20 +22,27 @@ glider = """001000
 000000"""
 
 # default_grid = blinker
-default_grid =glider
+default_grid = glider
 
-if grid_args:
-    for x in range(int(grid_args[0])):
-        grid.append([])
-        for y in range(int(grid_args[1])):
-            grid[x].append(False)
-else:
-    grid_lines = default_grid.split("\n")
-    for grid_line in range(len(grid_lines)):
-        grid.append([])
-        for cell in range(len(grid_lines[grid_line])):
-            cell_char = grid_lines[grid_line][cell]
-            grid[grid_line].append(int(cell_char))
+def init_grid(grid_arg, default_grid):
+    grid = []
+    if grid_arg:
+        with open(grid_arg) as file:
+            x = 0
+            for line in file:
+                grid.append([])
+                for cell in range(len(line)):
+                    cell_char = line[cell]
+                    grid[x].append(int(cell_char))
+                x += 1
+    else:
+        grid_lines = default_grid.split("\n")
+        for grid_line in range(len(grid_lines)):
+            grid.append([])
+            for cell in range(len(grid_lines[grid_line])):
+                cell_char = grid_lines[grid_line][cell]
+                grid[grid_line].append(int(cell_char))
+    return grid
 
 def game_of_life(grid):
     result = []
@@ -67,14 +75,17 @@ def pretty_print(grid):
             print(grid[x][y], end="")
         print()
 
-pretty_print(grid)
-print()
-grid = game_of_life(grid)
-pretty_print(grid)
-print()
-input("ready for loop? >")
-while(True):
-  grid = game_of_life(grid)
-  pretty_print(game_of_life(grid))
-  print()
-  sleep(1.5) 
+def curses_print(grid, scr):
+    for x in range(len(grid)):
+        for y in range(len(grid[x])):
+            scr.addch(x, y, ord('@') if grid[x][y] == 1 else ord('.'))
+
+def main(scr):
+    grid = init_grid(grid_arg, default_grid)
+    while True:
+        grid = game_of_life(grid)
+        curses_print(grid, scr)
+        scr.refresh()
+        sleep(.5) 
+
+curses.wrapper(main)
