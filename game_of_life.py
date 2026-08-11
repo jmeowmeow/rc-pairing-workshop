@@ -27,14 +27,16 @@ default_grid = glider
 def init_grid(grid_arg, default_grid):
     grid = []
     if grid_arg:
-        with open(grid_arg) as file:
+        with open(grid_arg) as f:
             x = 0
-            for line in file:
-                grid.append([])
-                for cell in range(len(line)):
-                    cell_char = line[cell]
-                    grid[x].append(int(cell_char))
-                x += 1
+            for line in f:
+                line = line.strip()
+                if len(line) > 0:
+                  grid.append([])
+                  for cell in range(len(line)):
+                      cell_char = line[cell]
+                      grid[x].append(int(cell_char))
+                  x += 1
     else:
         grid_lines = default_grid.split("\n")
         for grid_line in range(len(grid_lines)):
