@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 
 # get the filename if present
 grid_args = sys.argv[1] if len(sys.argv) > 1 else None 
@@ -9,7 +10,8 @@ default_grid = """00000
 00000
 00100
 00100
-00100"""
+00100
+00000"""
 
 if grid_args:
     for x in range(int(grid_args[0])):
@@ -57,4 +59,12 @@ def pretty_print(grid):
 
 pretty_print(grid)
 print()
-pretty_print(game_of_life(grid))
+grid = game_of_life(grid)
+pretty_print(grid)
+print()
+input("ready for loop? >")
+while(True):
+  grid = game_of_life(grid)
+  pretty_print(game_of_life(grid))
+  print()
+  sleep(1.5) 
